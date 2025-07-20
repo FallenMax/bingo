@@ -9,6 +9,8 @@ const i18n = {
   zh: {
     title: '动物园宾戈卡',
     bingoCount: '宾戈',
+    resetButton: '再来一次',
+    resetConfirm: '确定要重新开始游戏吗？这将清除所有已找到的动物。',
     rules: {
       title: '游戏规则:',
       items: ['• 点击动物格子来"找到"它们', '• 当一行、一列或一条对角线的5个动物都被找到时，就完成了一个宾戈', '• 完成的宾戈线会显示为粗黄线', '• 未完成的宾戈线显示为细白虚线', '• 目标：完成所有12条宾戈线！', '🎉 完成宾戈时会有烟花庆祝！'],
@@ -44,6 +46,8 @@ const i18n = {
   en: {
     title: 'Zoo Bingo Card',
     bingoCount: 'Bingo',
+    resetButton: 'Play Again',
+    resetConfirm: 'Are you sure you want to restart the game? This will clear all found animals.',
     rules: {
       title: 'Game Rules:',
       items: [
@@ -243,6 +247,16 @@ export default function BingoCard() {
     })
   }
 
+  // 重置游戏
+  const resetGame = () => {
+    const confirmed = window.confirm(t.resetConfirm)
+    if (confirmed) {
+      setOpenedCells(new Array(25).fill(false))
+      setCompletedLines([])
+      setNewlyCompletedLines([])
+    }
+  }
+
   // 获取当前配置和文案
   const config = isMobile ? GRID_CONFIG.mobile : GRID_CONFIG.desktop
   const t = i18n[language]
@@ -283,21 +297,28 @@ export default function BingoCard() {
           <div className="bg-red-500 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg shadow-lg">
             <h1 className="text-xl md:text-2xl font-bold">{t.title}</h1>
           </div>
-          <motion.div
-            className="bg-yellow-400 text-black px-3 md:px-4 py-2 rounded-lg shadow-lg font-bold text-lg md:text-xl"
-            animate={
-              newlyCompletedLines.length > 0
-                ? {
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 5, -5, 0],
-                    backgroundColor: ['#fbbf24', '#ef4444', '#10b981', '#fbbf24'],
-                  }
-                : {}
-            }
-            transition={{ duration: 0.6, ease: 'easeInOut' }}
-          >
-            {t.bingoCount}: {completedLines.length}
-          </motion.div>
+
+          <div className="flex items-center gap-3">
+            <motion.div
+              className="bg-yellow-400 text-black px-3 md:px-4 py-2 rounded-lg shadow-lg font-bold text-lg md:text-xl"
+              animate={
+                newlyCompletedLines.length > 0
+                  ? {
+                      scale: [1, 1.2, 1],
+                      rotate: [0, 5, -5, 0],
+                      backgroundColor: ['#fbbf24', '#ef4444', '#10b981', '#fbbf24'],
+                    }
+                  : {}
+              }
+              transition={{ duration: 0.6, ease: 'easeInOut' }}
+            >
+              {t.bingoCount}: {completedLines.length}
+            </motion.div>
+
+            <button onClick={resetGame} className="bg-gray-500 hover:bg-gray-600 text-white px-3 md:px-4 py-2 rounded-lg shadow-lg font-bold text-sm md:text-base transition-colors duration-200">
+              {t.resetButton}
+            </button>
+          </div>
         </div>
 
         {/* 宾戈卡 - 水平居中，响应式 */}
