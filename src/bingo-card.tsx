@@ -233,7 +233,7 @@ export default function BingoCard() {
     }
 
     setCompletedLines(newCompletedLines)
-  }, [openedCells, completedLines])
+  }, [openedCells])
 
   const toggleCell = (index: number) => {
     setOpenedCells((prev) => {
@@ -328,11 +328,12 @@ export default function BingoCard() {
                       width: `${length}px`,
                     }}
                     // 新完成的宾戈线脉冲效果 - 保持正确的旋转角度
+                    initial={{ rotate: angle }} // 初始状态设置旋转角度，避免启动动画
                     animate={
                       isNewlyCompleted
                         ? {
                             scale: isMobile ? [1, 1.1, 1, 1.05, 1] : [1, 1.2, 1, 1.1, 1],
-                            rotate: angle, // 明确保持旋转角度
+                            rotate: angle,
                             opacity: [0.8, 1, 0.9, 1, 0.95],
                             filter: [
                               'drop-shadow(0 0 0px #fbbf24)',
@@ -343,7 +344,6 @@ export default function BingoCard() {
                             ],
                           }
                         : {
-                            rotate: angle, // 始终保持正确的旋转角度
                             filter: isCompleted ? `drop-shadow(0 0 ${isMobile ? '1px' : '2px'} #fbbf24)` : undefined,
                           }
                     }
@@ -388,9 +388,13 @@ export default function BingoCard() {
                             borderColor: ['#eab308', '#ef4444', '#10b981', '#3b82f6', '#eab308'],
                             boxShadow: ['0 10px 15px -3px rgb(0 0 0 / 0.1)', '0 0 20px rgb(239 68 68 / 0.5)', '0 0 20px rgb(16 185 129 / 0.5)', '0 0 20px rgb(59 130 246 / 0.5)', '0 10px 15px -3px rgb(0 0 0 / 0.1)'],
                           }
-                        : {}
+                        : {
+                            scale: 1,
+                            borderColor: '#eab308',
+                            boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                          }
                     }
-                    transition={{ duration: 1.5, ease: 'easeInOut' }}
+                    transition={{ duration: isInNewBingo && openedCells[index] ? 1.5 : 0.3, ease: 'easeInOut' }}
                   >
                     {/* 动物内容 */}
                     <div className={`flex flex-col items-center justify-center h-full ${isMobile ? 'p-1' : 'p-2'}`}>
